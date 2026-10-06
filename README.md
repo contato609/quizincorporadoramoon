@@ -63,7 +63,7 @@ No topo do `<script>` em `index.html`, preencha:
 
 ```js
 const CONFIG = {
-  supabaseUrl: 'https://<id-do-projeto>.supabase.co',
+  supabaseUrl: 'https://wdadntbtxnreknkwiajp.supabase.co',
   whatsapp: '5512981125332'
 };
 ```
