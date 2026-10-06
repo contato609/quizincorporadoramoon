@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Digital Moon — Diagnóstico de Lançamento</title>
+<meta name="description" content="Responda algumas perguntas rápidas e receba um diagnóstico da Digital Moon para o marketing do seu lançamento imobiliário.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Identidade Digital Moon: preto profundo, dourado e branco (ref. "O Fim das Imobiliárias") */
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface-2: #222222;
+    --text: #ffffff;
+    --text-2: #a8a8a8;
+    --text-3: #6e6e6e;
+    --border: #2b2b2b;
+    --border-hi: #3d3d3d;
+    --gold: #d4af35;
+    --gold-hi: #e3c25a;
+    --gold-ink: #231f12;
+    --gold-line: #463c19;
+    --gold-bg: rgba(212,175,53,0.10);
+    --whatsapp: #25d366;
+    --error: #ff8a80;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100%; }
+  body {
+    font-family: var(--font);
+    background:
+      radial-gradient(520px 520px at 92% -6%, rgba(212,175,53,0.16), transparent 62%),
+      var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header / progresso ─────────────────────────────────────────────── */
+  header {
+    position: sticky; top: 0; z-index: 5;
+    background: rgba(15,15,15,0.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .progress { height: 3px; background: var(--border); }
+  .progress-bar {
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, #b8942a, var(--gold-hi));
+    transition: width .4s ease;
+  }
+  .brand {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    max-width: 720px; margin: 0 auto; padding: 12px 20px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; color: var(--gold); letter-spacing: -0.01em; }
+  .logo img { width: 30px; height: 30px; object-fit: contain; }
+  .brand-right { display: flex; align-items: center; gap: 12px; }
+  .preview-badge {
+    font-size: 11px; font-weight: 600; letter-spacing: .3px;
+    color: var(--gold); background: var(--gold-ink); border: 1px solid var(--gold-line);
+    border-radius: 999px; padding: 4px 10px; white-space: nowrap;
+  }
+  .step-count { font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ── Telas ──────────────────────────────────────────────────────────── */
+  main {
+    flex: 1;
+    display: flex; align-items: center;
+    width: 100%; max-width: 720px; margin: 0 auto;
+    padding: 24px 20px 88px;
+  }
+  form { width: 100%; }
+  .screen { display: none; width: 100%; }
+  .screen.active { display: block; animation: enter .45s ease both; }
+  .screen.back { animation-name: enter-back; }
+  @keyframes enter { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  @keyframes enter-back { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: none; } }
+
+  .tag {
+    display: inline-flex; align-items: center;
+    background: var(--gold-ink); border: 1px solid var(--gold-line); border-radius: 10px;
+    color: var(--gold); font-weight: 700; letter-spacing: -0.01em;
+    font-size: 15px; padding: 6px 12px; margin-bottom: 20px;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .eyebrow .num {
+    display: inline-grid; place-items: center;
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--gold-ink); border: 1px solid var(--gold-line); font-size: 12px;
+  }
+  h1 { font-size: clamp(32px, 6.4vw, 48px); line-height: 1.05; font-weight: 800; letter-spacing: -0.035em; margin-bottom: 18px; text-wrap: balance; }
+  h1 em { font-style: normal; color: var(--gold); }
+  h2 { font-size: clamp(23px, 4.6vw, 31px); line-height: 1.18; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 10px; text-wrap: balance; }
+  .lead { font-size: 17px; line-height: 1.55; color: var(--text-2); max-width: 560px; margin-bottom: 28px; }
+  .hint { font-size: 15px; color: var(--text-2); margin-bottom: 24px; line-height: 1.5; }
+
+  .meta-list { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 22px; font-size: 13px; color: var(--text-3); }
+  .meta-list span::before { content: "•"; margin-right: 8px; color: var(--gold); }
+
+  /* ── Campos de texto ───────────────────────────────────────────────── */
+  .text-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border-hi);
+    color: var(--text);
+    font: inherit;
+    font-size: clamp(20px, 4.5vw, 26px);
+    padding: 10px 2px 12px;
+    outline: none;
+    border-radius: 0;
+    transition: border-color .2s;
+  }
+  .text-input::placeholder { color: var(--text-3); }
+  .text-input:focus { border-bottom-color: var(--gold); }
+  .text-input.invalid { border-bottom-color: var(--error); }
+
+  /* ── Opções ─────────────────────────────────────────────────────────── */
+  .options { display: grid; gap: 10px; max-width: 540px; }
+  .options.sending { pointer-events: none; opacity: .6; }
+  .option {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; text-align: left;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font: inherit; font-size: 16px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s, transform .1s;
+  }
+  .option:hover { border-color: var(--border-hi); background: var(--surface-2); }
+  .option:active { transform: scale(.99); }
+  .option:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .option .key {
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    width: 26px; height: 26px;
+    border: 1px solid var(--border-hi);
+    border-radius: 6px;
+    font-size: 12px; font-weight: 600; color: var(--text-2);
+  }
+  .option .label small { display: block; font-size: 13px; color: var(--text-3); margin-top: 2px; }
+  .option.selected { border-color: var(--gold); background: var(--gold-bg); }
+  .option.selected .key { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+
+  /* ── Ações ──────────────────────────────────────────────────────────── */
+  .actions { display: flex; align-items: center; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--surface-2); color: var(--text);
+    border: 1px solid var(--border-hi); border-radius: 10px;
+    font: inherit; font-size: 16px; font-weight: 600;
+    padding: 13px 22px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .1s, filter .2s;
+  }
+  .btn:hover { filter: brightness(1.1); }
+  .btn:active { transform: scale(.98); }
+  .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .btn.gold { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+  .btn.whatsapp { background: var(--whatsapp); border-color: var(--whatsapp); color: #0b1a10; }
+  .enter-hint { font-size: 13px; color: var(--text-3); }
+  .enter-hint b { color: var(--text-2); font-weight: 500; }
+  .error-msg { color: var(--error); font-size: 14px; margin-top: 12px; min-height: 20px; }
+
+  .back-btn {
+    position: fixed; left: 20px; bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    background: var(--surface); color: var(--text-2);
+    border: 1px solid var(--border); border-radius: 10px;
+    font: inherit; font-size: 14px;
+    padding: 9px 14px; cursor: pointer;
+  }
+  .back-btn:hover { color: var(--text); border-color: var(--border-hi); }
+
+  /* ── Final ──────────────────────────────────────────────────────────── */
+  .done-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--gold-ink); border: 1px solid var(--gold-line); color: var(--gold);
+    font-size: 24px; margin-bottom: 22px;
+  }
+
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  [hidden] { display: none !important; }
+
+  @media (max-width: 520px) {
+    main { align-items: flex-start; padding-top: 36px; }
+    .enter-hint { display: none; }
+    .back-btn { left: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .screen.active { animation: none; }
+    .progress-bar { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="progress"><div class="progress-bar" id="progress"></div></div>
+  <div class="brand">
+    <div class="logo"><img src="logo.png" alt="" width="30" height="30"><span>Digital Moon</span></div>
+    <div class="brand-right">
+      <span class="preview-badge" id="previewBadge" hidden>Prévia · nada é enviado</span>
+      <div class="step-count" id="stepCount"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <form id="quiz" novalidate autocomplete="on">
+    <!-- honeypot anti-spam -->
+    <input type="text" name="website" id="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <!--
+      Cada pergunta é uma <section> com:
+        data-step   chave da resposta
+        data-type   text | choice
+        data-if     (opcional) "chave:valor" — só aparece se a resposta anterior bater
+      Opções com data-disqualify encerram o quiz e marcam o lead como desqualificado.
+    -->
+
+    <section class="screen active" data-step="intro">
+      <div class="tag">Sistema de Visitas Garantidas™</div>
+      <h1>Descubra quanto o seu próximo lançamento pode <em>vender</em>.</h1>
+      <p class="lead">Responda algumas perguntas rápidas sobre a sua empresa e o seu lançamento. Nosso time analisa o cenário e fala com você pelo WhatsApp.</p>
+      <div class="actions">
+        <button type="button" class="btn gold" data-next>Começar →</button>
+        <span class="enter-hint">ou pressione <b>Enter ↵</b></span>
+      </div>
+      <div class="meta-list"><span>Leva menos de 2 minutos</span><span>100% focado no mercado imobiliário</span></div>
+    </section>
+
+    <section class="screen" data-step="nome" data-type="text">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre você</div>
+      <h2>Qual é o seu nome?</h2>
+      <input class="text-input" type="text" id="nome" name="nome" placeholder="Digite seu nome completo" autocomplete="name" maxlength="120">
+      <div class="error-msg" aria-live="polite"></div>
+      <div class="actions"><button type="button" class="btn" data-next>OK ✓</button><span class="enter-hint">pressione <b>Enter ↵</b></span></div>
+    </section>
+
+    <section class="screen" data-step="email" data-type="text">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre você</div>
+      <h2>Prazer, <span data-fill="primeiroNome"></span>! Qual é o seu melhor e-mail?</h2>
+      <input class="text-input" type="email" id="email" name="email" placeholder="nome@empresa.com.br" autocomplete="email" inputmode="email" maxlength="160">
+      <div class="error-msg" aria-live="polite"></div>
+      <div class="actions"><button type="button" class="btn" data-next>OK ✓</button><span class="enter-hint">pressione <b>Enter ↵</b></span></div>
+    </section>
+
+    <section class="screen" data-step="telefone" data-type="text">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre você</div>
+      <h2>E o seu WhatsApp?</h2>
+      <p class="hint">É por ele que o nosso time vai falar com você.</p>
+      <input class="text-input" type="tel" id="telefone" name="telefone" placeholder="(11) 91234-5678" autocomplete="tel-national" inputmode="numeric" maxlength="16">
+      <div class="error-msg" aria-live="polite"></div>
+      <div class="actions"><button type="button" class="btn" data-next>OK ✓</button><span class="enter-hint">pressione <b>Enter ↵</b></span></div>
+    </section>
+
+    <section class="screen" data-step="perfil" data-type="choice">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre a empresa</div>
+      <h2>Em qual desses você se encaixa?</h2>
+      <div class="options">
+        <button type="button" class="option" data-value="Incorporadora"><span class="key">A</span><span class="label">Incorporadora</span></button>
+        <button type="button" class="option" data-value="Loteadora"><span class="key">B</span><span class="label">Loteadora</span></button>
+        <button type="button" class="option" data-value="Imobiliária"><span class="key">C</span><span class="label">Imobiliária</span></button>
+        <button type="button" class="option" data-value="Corretor autônomo" data-disqualify="Corretor autônomo"><span class="key">D</span><span class="label">Corretor autônomo</span></button>
+      </div>
+      <div class="error-msg" aria-live="polite"></div>
+    </section>
+
+    <section class="screen" data-step="trabalha_planta" data-type="choice" data-if="perfil:Imobiliária">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre a empresa</div>
+      <h2>A sua imobiliária trabalha com imóveis na planta?</h2>
+      <p class="hint">Lançamentos de incorporadoras, ainda em obra ou pré-lançamento.</p>
+      <div class="options">
+        <button type="button" class="option" data-value="Sim, principalmente na planta"><span class="key">A</span><span class="label">Sim, principalmente imóveis na planta</span></button>
+        <button type="button" class="option" data-value="Planta e usados"><span class="key">B</span><span class="label">Trabalhamos com os dois<small>Imóveis na planta e usados</small></span></button>
+        <button type="button" class="option" data-value="Não, só usados/terceiros" data-disqualify="Imobiliária sem imóveis na planta"><span class="key">C</span><span class="label">Não, só imóveis usados ou de terceiros</span></button>
+      </div>
+      <div class="error-msg" aria-live="polite"></div>
+    </section>
+
+    <section class="screen" data-step="empresa" data-type="text">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre a empresa</div>
+      <h2>Qual é o nome da sua <span data-fill="tipoEmpresa"></span>?</h2>
+      <input class="text-input" type="text" id="empresa" name="empresa" placeholder="Nome da empresa" autocomplete="organization" maxlength="160">
+      <div class="error-msg" aria-live="polite"></div>
+      <div class="actions"><button type="button" class="btn" data-next>OK ✓</button><span class="enter-hint">pressione <b>Enter ↵</b></span></div>
+    </section>
+
+    <section class="screen" data-step="momento" data-type="choice">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre o lançamento</div>
+      <h2>A <span data-fill="empresa"></span> está com um lançamento em andamento?</h2>
+      <div class="options">
+        <button type="button" class="option" data-value="Sim, estamos em lançamento"><span class="key">A</span><span class="label">Sim, estamos em lançamento</span></button>
+        <button type="button" class="option" data-value="Em pré-lançamento"><span class="key">B</span><span class="label">Estamos em pré-lançamento</span></button>
+        <button type="button" class="option" data-value="Lançamos nos próximos 6 meses"><span class="key">C</span><span class="label">Ainda não, mas vamos lançar nos próximos 6 meses</span></button>
+        <button type="button" class="option" data-value="Não no momento"><span class="key">D</span><span class="label">Não no momento</span></button>
+      </div>
+      <div class="error-msg" aria-live="polite"></div>
+    </section>
+
+    <section class="screen" data-step="vgv" data-type="choice">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre o lançamento</div>
+      <h2>Qual é o VGV do lançamento atual (ou do próximo)?</h2>
+      <p class="hint">VGV = Valor Geral de Vendas do empreendimento.</p>
+      <div class="options">
+        <button type="button" class="option" data-value="Abaixo de R$ 20 milhões"><span class="key">A</span><span class="label">Abaixo de R$ 20 milhões</span></button>
+        <button type="button" class="option" data-value="R$ 20 a 50 milhões"><span class="key">B</span><span class="label">R$ 20 a 50 milhões</span></button>
+        <button type="button" class="option" data-value="R$ 50 a 100 milhões"><span class="key">C</span><span class="label">R$ 50 a 100 milhões</span></button>
+        <button type="button" class="option" data-value="R$ 100 a 300 milhões"><span class="key">D</span><span class="label">R$ 100 a 300 milhões</span></button>
+        <button type="button" class="option" data-value="Acima de R$ 300 milhões"><span class="key">E</span><span class="label">Acima de R$ 300 milhões</span></button>
+      </div>
+      <div class="error-msg" aria-live="polite"></div>
+    </section>
+
+    <section class="screen" data-step="time_marketing" data-type="choice">
+      <div class="eyebrow"><span class="num" data-num></span>Sobre o marketing</div>
+      <h2>Como é estruturado o marketing de vocês hoje?</h2>
+      <div class="options">
+        <button type="button" class="option" data-value="Time próprio"><span class="key">A</span><span class="label">Time próprio<small>Equipe interna cuida de tudo</small></span></button>
+        <button type="button" class="option" data-value="Terceirizado"><span class="key">B</span><span class="label">Terceirizado<small>Agência ou parceiros externos</small></span></button>
+        <button type="button" class="option" data-value="Ambos"><span class="key">C</span><span class="label">Ambos<small>Time interno + agência</small></span></button>
+      </div>
+      <div class="error-msg" aria-live="polite"></div>
+    </section>
+
+    <!-- Final: qualificado -->
+    <section class="screen" data-step="done">
+      <div class="done-icon" aria-hidden="true">✓</div>
+      <h1>Recebemos, <span data-fill="primeiroNome"></span>!</h1>
+      <p class="lead">Nosso time entrará em contato com você em instantes pelo WhatsApp!</p>
+      <div class="actions">
+        <a class="btn whatsapp" href="#" id="waLink" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.03c-.25.69-1.44 1.32-1.99 1.4-.51.08-1.15.11-1.86-.12-.43-.14-.98-.32-1.68-.62-2.96-1.28-4.89-4.26-5.04-4.46-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.59-.37.79-.37h.57c.18 0 .43-.07.67.51.25.59.84 2.04.91 2.19.07.15.12.32.02.52-.1.2-.15.32-.3.49-.15.17-.31.38-.45.51-.15.15-.3.31-.13.61.17.3.77 1.27 1.65 2.05 1.13 1.01 2.09 1.32 2.39 1.47.3.15.47.12.64-.07.17-.2.74-.86.94-1.16.2-.3.39-.25.67-.15.27.1 1.73.82 2.03.96.3.15.49.22.57.34.07.13.07.72-.18 1.41Z"/></svg>
+          Chamar no WhatsApp
+        </a>
+      </div>
+    </section>
+
+    <!-- Final: desqualificado -->
+    <section class="screen" data-step="done-dq">
+      <div class="done-icon" aria-hidden="true">☾</div>
+      <h1>Obrigado, <span data-fill="primeiroNome"></span>!</h1>
+      <p class="lead">Hoje o nosso trabalho é focado em incorporadoras, loteadoras e imobiliárias de lançamentos. Seus dados ficaram registrados e, se surgir algo que faça sentido para você, a gente entra em contato.</p>
+      <div class="actions">
+        <a class="btn" href="https://www.instagram.com/digitalmoonbr/" target="_blank" rel="noopener">Seguir @digitalmoonbr</a>
+      </div>
+    </section>
+  </form>
+</main>
+
+<button type="button" class="back-btn" id="backBtn" hidden>↑ Voltar</button>
+
+<script>
+// ── Configuração ─────────────────────────────────────────────────────────────
+// supabaseUrl: URL do projeto Supabase (Settings → API). Vazio = modo prévia (nada é enviado).
+// whatsapp: número da Digital Moon, só dígitos com DDI + DDD.
+const CONFIG = {
+  supabaseUrl: '',
+  whatsapp: '5512981125332'
+};
+const PREVIEW = !CONFIG.supabaseUrl;
+
+// ── Estado ────────────────────────────────────────────────────────────────────
+const form    = document.getElementById('quiz');
+const screens = [...form.querySelectorAll('.screen')];
+const byStep  = Object.fromEntries(screens.map(s => [s.dataset.step, s]));
+const answers = {};
+let current   = byStep.intro;
+
+const TIPO_EMPRESA = { 'Incorporadora': 'incorporadora', 'Loteadora': 'loteadora', 'Imobiliária': 'imobiliária' };
+
+const utm = (() => {
+  const p = new URLSearchParams(location.search);
+  return {
+    utm_source:   p.get('utm_source'),
+    utm_medium:   p.get('utm_medium'),
+    utm_campaign: p.get('utm_campaign'),
+    utm_content:  p.get('utm_content'),
+    utm_term:     p.get('utm_term'),
+    referrer:     document.referrer || null
+  };
+})();
+
+// ── Fluxo condicional ────────────────────────────────────────────────────────
+function applies(screen) {
+  const cond = screen.dataset.if;
+  if (!cond) return true;
+  const [key, value] = cond.split(':');
+  return answers[key] === value;
+}
+// Perguntas que valem para as respostas atuais, na ordem
+const flow = () => screens.filter(s => s.dataset.type && applies(s));
+
+// ── Validação ────────────────────────────────────────────────────────────────
+const onlyDigits = v => v.replace(/\D/g, '');
+const validators = {
+  nome:     v => v.trim().length >= 2 || 'Digite seu nome.',
+  email:    v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) || 'Digite um e-mail válido.',
+  telefone: v => [10, 11].includes(onlyDigits(v).length) || 'Digite um telefone com DDD.',
+  empresa:  v => v.trim().length >= 2 || 'Digite o nome da empresa.'
+};
+
+function maskPhone(v) {
+  const d = onlyDigits(v).slice(0, 11);
+  if (d.length <= 2)  return d.length ? `(${d}` : '';
+  if (d.length <= 6)  return `(${d.slice(0,2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+}
+form.telefone.addEventListener('input', e => { e.target.value = maskPhone(e.target.value); });
+
+// ── Navegação ────────────────────────────────────────────────────────────────
+function fillPlaceholders() {
+  const fills = {
+    primeiroNome: (answers.nome || '').trim().split(/\s+/)[0],
+    tipoEmpresa:  TIPO_EMPRESA[answers.perfil] || 'empresa',
+    empresa:      (answers.empresa || 'sua empresa').trim()
+  };
+  form.querySelectorAll('[data-fill]').forEach(el => { el.textContent = fills[el.dataset.fill] || ''; });
+}
+
+function updateChrome() {
+  const steps = flow();
+  const idx = steps.indexOf(current);
+  const finished = current.dataset.step.startsWith('done');
+  steps.forEach((s, i) => { const n = s.querySelector('[data-num]'); if (n) n.textContent = i + 1; });
+  document.getElementById('progress').style.width =
+    finished ? '100%' : `${Math.max(idx, 0) / steps.length * 100}%`;
+  document.getElementById('stepCount').textContent = idx >= 0 ? `${idx + 1} de ${steps.length}` : '';
+  document.getElementById('backBtn').hidden = current === byStep.intro || finished;
+}
+
+function show(screen, backwards = false) {
+  current.classList.remove('active', 'back');
+  current = screen;
+  fillPlaceholders();
+  if (screen.dataset.step === 'done') setWhatsappLink();
+  screen.classList.toggle('back', backwards);
+  screen.classList.add('active');
+  updateChrome();
+  window.scrollTo({ top: 0 });
+  const focusEl = screen.querySelector('.text-input') || screen.querySelector('.option.selected') || screen.querySelector('.option, .btn');
+  if (focusEl) setTimeout(() => focusEl.focus({ preventScroll: true }), 50);
+}
+
+function setError(screen, msg) {
+  const el = screen.querySelector('.error-msg');
+  if (el) el.textContent = msg || '';
+  const input = screen.querySelector('.text-input');
+  if (input) input.classList.toggle('invalid', !!msg);
+}
+
+function next() {
+  const s = current;
+  const key = s.dataset.step;
+  if (s.dataset.type === 'text') {
+    const input = s.querySelector('.text-input');
+    const result = validators[key](input.value);
+    if (result !== true) { setError(s, result); input.focus(); return; }
+    answers[key] = key === 'telefone' ? maskPhone(input.value) : input.value.trim();
+  }
+  if (s.dataset.type === 'choice' && !answers[key]) { setError(s, 'Escolha uma opção.'); return; }
+  setError(s, '');
+
+  const chosen = s.querySelector('.option.selected');
+  if (chosen && chosen.dataset.disqualify) { submit(chosen.dataset.disqualify); return; }
+
+  const steps = flow();
+  const following = s === byStep.intro ? steps[0] : steps[steps.indexOf(s) + 1];
+  if (following) show(following);
+  else submit(null);
+}
+
+function back() {
+  const steps = flow();
+  const idx = steps.indexOf(current);
+  show(idx > 0 ? steps[idx - 1] : byStep.intro, true);
+}
+
+form.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', next));
+document.getElementById('backBtn').addEventListener('click', back);
+
+form.querySelectorAll('.option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const s = opt.closest('.screen');
+    s.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    answers[s.dataset.step] = opt.dataset.value;
+    setError(s, '');
+    setTimeout(next, 280);
+  });
+});
+
+document.addEventListener('keydown', e => {
+  const s = current;
+  if (s.dataset.step.startsWith('done')) return;
+  if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.target.tagName === 'BUTTON') return; // clique nativo do botão
+    e.preventDefault();
+    next();
+    return;
+  }
+  if (s.dataset.type === 'choice' && /^[a-z]$/i.test(e.key) && !e.metaKey && !e.ctrlKey) {
+    const opt = s.querySelectorAll('.option')[e.key.toUpperCase().charCodeAt(0) - 65];
+    if (opt) opt.click();
+  }
+});
+form.addEventListener('submit', e => e.preventDefault());
+
+// ── Envio ────────────────────────────────────────────────────────────────────
+function setWhatsappLink() {
+  const msg = `Olá! Acabei de responder o diagnóstico da Digital Moon. Sou ${answers.nome || ''}, da ${answers.empresa || ''}.`;
+  document.getElementById('waLink').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+}
+
+let sending = false;
+async function submit(disqualifyReason) {
+  if (sending) return;
+  const s = current;
+  const opts = s.querySelector('.options');
+  const end = disqualifyReason ? byStep['done-dq'] : byStep.done;
+
+  // Só as respostas das perguntas que fizeram parte do caminho percorrido
+  const asked = flow().slice(0, flow().indexOf(s) + 1).map(x => x.dataset.step);
+  const payload = {
+    ...Object.fromEntries(asked.map(k => [k, answers[k] ?? null])),
+    qualificado: !disqualifyReason,
+    motivo_desqualificacao: disqualifyReason || null,
+    ...utm,
+    website: form.website.value
+  };
+
+  sending = true; opts && opts.classList.add('sending'); setError(s, '');
+  let error = null;
+  if (PREVIEW) {
+    console.info('[prévia] payload que seria enviado:', payload);
+  } else {
+    try {
+      const res = await fetch(`${CONFIG.supabaseUrl}/functions/v1/quiz-lead`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) error = new Error(`HTTP ${res.status}: ${await res.text()}`);
+    } catch (err) { error = err; }
+  }
+  sending = false; opts && opts.classList.remove('sending');
+
+  if (error) {
+    console.error(error);
+    setError(s, 'Não conseguimos enviar agora. Verifique sua conexão e escolha a opção de novo.');
+    return;
+  }
+  if (!disqualifyReason) {
+    if (window.fbq)  fbq('track', 'Lead');
+    if (window.gtag) gtag('event', 'generate_lead');
+  }
+  show(end);
+}
+
+document.getElementById('previewBadge').hidden = !PREVIEW;
+updateChrome();
+</script>
+</body>
+</html>
