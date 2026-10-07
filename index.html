@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Digital Moon — Diagnóstico de Lançamento</title>
-<meta name="description" content="Responda algumas perguntas rápidas e receba um diagnóstico da Digital Moon para o marketing do seu lançamento imobiliário.">
+<title>Digital Moon — Sistema de Visitas Garantidas™</title>
+<meta name="description" content="Esgote o seu lançamento com o Sistema de Visitas Garantidas™ da Digital Moon. Agende uma conversa gratuita de 15 minutos.">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -256,14 +256,14 @@ src="https://www.facebook.com/tr?id=1116845919994706&ev=PageView&noscript=1"/></
     -->
 
     <section class="screen active" data-step="intro">
-      <div class="tag">Sistema de Visitas Garantidas™</div>
-      <h1>Descubra quanto o seu próximo lançamento pode <em>vender</em>.</h1>
-      <p class="lead">Responda algumas perguntas rápidas sobre a sua empresa e o seu lançamento. Nosso time analisa o cenário e fala com você pelo WhatsApp.</p>
+      <div class="tag">Exclusivo para o mercado de lançamentos</div>
+      <h1>Esgote o seu lançamento com o <em>Sistema de Visitas Garantidas™</em></h1>
+      <p class="lead">Levamos o seu lead do anúncio no celular até o estande de vendas do seu empreendimento. Responda algumas perguntas rápidas e agende uma conversa gratuita de 15 minutos com o nosso time.</p>
       <div class="actions">
-        <button type="button" class="btn gold" data-next>Começar →</button>
+        <button type="button" class="btn gold" data-next>Quero agendar minha conversa →</button>
         <span class="enter-hint">ou pressione <b>Enter ↵</b></span>
       </div>
-      <div class="meta-list"><span>Leva menos de 2 minutos</span><span>100% focado no mercado imobiliário</span></div>
+      <div class="meta-list"><span>R$ 350M+ em vendas geradas para clientes</span><span>47+ incorporadoras já testaram o sistema</span><span>Conversa sem compromisso</span></div>
     </section>
 
     <section class="screen" data-step="nome" data-type="text">
@@ -547,7 +547,7 @@ form.addEventListener('submit', e => e.preventDefault());
 
 // ── Envio ────────────────────────────────────────────────────────────────────
 function setWhatsappLink() {
-  const msg = `Olá! Acabei de responder o diagnóstico da Digital Moon. Sou ${answers.nome || ''}, da ${answers.empresa || ''}.`;
+  const msg = `Olá! Quero agendar minha conversa sobre o Sistema de Visitas Garantidas. Sou ${answers.nome || ''}, da ${answers.empresa || ''}.`;
   document.getElementById('waLink').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
 
