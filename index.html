@@ -503,6 +503,7 @@ function next() {
   if (chosen && chosen.dataset.disqualify) { submit(chosen.dataset.disqualify); return; }
 
   const steps = flow();
+  if (s === byStep.intro && window.fbq) fbq('trackCustom', 'IniciouQuiz');
   const following = s === byStep.intro ? steps[0] : steps[steps.indexOf(s) + 1];
   if (following) show(following);
   else submit(null);
@@ -559,9 +560,11 @@ async function submit(disqualifyReason) {
 
   // Só as respostas das perguntas que fizeram parte do caminho percorrido
   const asked = flow().slice(0, flow().indexOf(s) + 1).map(x => x.dataset.step);
+  const eventId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random().toString(16).slice(2);
   const payload = {
     ...Object.fromEntries(asked.map(k => [k, answers[k] ?? null])),
     qualificado: !disqualifyReason,
+    event_id: eventId,
     motivo_desqualificacao: disqualifyReason || null,
     ...utm,
     website: form.website.value
@@ -589,7 +592,7 @@ async function submit(disqualifyReason) {
     return;
   }
   if (!disqualifyReason) {
-    if (window.fbq)  fbq('track', 'Lead');
+    if (window.fbq)  fbq('track', 'Lead', {}, { eventID: eventId });
     if (window.gtag) gtag('event', 'generate_lead');
   }
   show(end);
